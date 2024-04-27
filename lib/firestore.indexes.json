@@ -1,0 +1,52 @@
+[
+    {
+    "indexId": "my-index-1",
+    "collection": "users",
+    "fields": [
+        {
+        "fieldPath": "fullname",
+        "order": "ASCENDING"
+        }
+    ]
+    },
+    {
+    "indexId": "my-index-2",
+    "collection": "users",
+    "fields": [
+        {
+        "fieldPath": "email",
+        "order": "ASCENDING"
+        }
+    ]
+    },
+    {
+    "indexId": "my-index-3",
+    "collection": "users",
+    "fields": [
+        {
+        "fieldPath": "enrollmentNumber",
+        "order": "ASCENDING"
+        }
+    ]
+    },
+    {
+    "indexId": "my-index-4",
+    "collection": "users",
+    "fields": [
+        {
+        "fieldPath": "course",
+        "order": "ASCENDING"
+        }
+    ]
+    },
+    {
+    "indexId": "my-index-5",
+    "collection": "users",
+    "fields": [
+        {
+        "fieldPath": "year",
+        "order": "ASCENDING"
+        }
+    ]
+    }
+]
