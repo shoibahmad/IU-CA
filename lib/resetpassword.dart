@@ -4,7 +4,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:iu_ca/loginpage.dart';
 
 class PasswordResetScreen extends StatefulWidget {
-  const PasswordResetScreen({super.key});
+  const PasswordResetScreen({Key? key}) : super(key: key);
 
   @override
   State<PasswordResetScreen> createState() => _PasswordResetScreenState();
@@ -24,7 +24,7 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        titleTextStyle: TextStyle(color: Colors.white, fontSize: 23),
+        titleTextStyle: const TextStyle(color: Colors.white, fontSize: 23),
         title: const Text('Password Reset'),
         backgroundColor: Colors.black,
         centerTitle: true,
@@ -104,9 +104,11 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
                     );
                   } on FirebaseAuthException catch (e) {
                     // Hide the loading indicator
+                    // ignore: use_build_context_synchronously
                     Navigator.pop(context);
 
                     // Show an error snackbar
+                    // ignore: use_build_context_synchronously
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text(
@@ -121,18 +123,22 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
                 }
               },
               style: ElevatedButton.styleFrom(
-                minimumSize: const Size(75, 50),
+                minimumSize: const Size(45, 45),
                 backgroundColor: Colors.teal,
                 padding: const EdgeInsets.symmetric(horizontal: 12),
                 textStyle: const TextStyle(
-                  fontWeight: FontWeight.bold,
                   fontSize: 15,
                   color: Colors.white,
                   decorationColor: Colors.amber,
                 ),
               ),
-              child: const Text('Reset Password'),
+              child: const Text(
+                'Reset Password',
+                style: TextStyle(color: Colors.white),
+              ),
             ),
+            const SizedBox(height: 20),
+            // Text field for writing a custom message
           ],
         ),
       ),

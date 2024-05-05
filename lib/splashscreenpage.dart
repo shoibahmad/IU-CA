@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:iu_ca/loginpage.dart';
 
+
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
@@ -24,7 +25,7 @@ class _SplashScreenState extends State<SplashScreen> {
       await Future.delayed(const Duration(milliseconds: 50));
     }
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => LoginPage()));
+        context, MaterialPageRoute(builder: (context) => const LoginPage()));
   }
 
   @override
@@ -40,33 +41,30 @@ class _SplashScreenState extends State<SplashScreen> {
               height: 400,
               width: 400,
             ),
-            Icon(Icons.school_sharp, size: 100),
-            SizedBox(height: 5),
+            const Icon(Icons.school_sharp, size: 100),
+            const SizedBox(height: 5),
             // Text
-            Text(
+            const Text(
               'Integral University',
               style: TextStyle(
                 fontSize: 34,
-                fontWeight: FontWeight.bold,
-                color: const Color.fromARGB(
-                    255, 29, 89, 31), // Customize text color
+                color: Colors.black // Customize text color
               ),
             ),
-            Text(
+            const Text(
               'IU CA Department',
               style: TextStyle(
                 fontSize: 18,
-                color: Colors.black, // Customize text color
+                color: Colors.green, // Customize text color
               ),
             ),
-            SizedBox(height: 50),
+            const SizedBox(height: 50),
             // Progress Bar
             CircularProgressIndicator(
-              backgroundColor: Colors.grey[200],
-              value: _progress, // Set the progress value
-              valueColor: AlwaysStoppedAnimation<Color>(
-                  Colors.teal), // Customize progress bar color
-            ),
+    backgroundColor: Colors.grey[200],
+    value: _progress, // Set the progress value
+    valueColor: const AlwaysStoppedAnimation<Color>(Colors.blue), // Customize progress bar color
+),
           ],
         ),
       ),

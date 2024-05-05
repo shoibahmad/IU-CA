@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:iu_ca/urlredirect.dart';
+import 'package:iu_ca/adminscreen.dart';
+import 'package:iu_ca/profilescreen.dart'; // Assuming ProfileScreen is defined
+import 'package:iu_ca/urlredirect.dart'; // Assuming UrlRedirectScreen is defined
 
 void main() {
   runApp(const MyApp());
@@ -11,14 +13,17 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       home: MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
+  const MyHomePage({super.key});
+
   @override
+  // ignore: library_private_types_in_public_api
   _MyHomePageState createState() => _MyHomePageState();
 }
 
@@ -26,9 +31,9 @@ class _MyHomePageState extends State<MyHomePage> {
   int _currentIndex = 0;
 
   final List<Widget> _pages = [
-    UrlRedirectScreen(),
-    ProfilePage(),
-    AdminPage(),
+    const UrlRedirectScreen(),
+    const ProfileScreen(),
+    const AdminScreen(),
   ];
 
   @override
@@ -39,7 +44,7 @@ class _MyHomePageState extends State<MyHomePage> {
         children: _pages,
       ),
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: const Color.fromARGB(255, 11, 32, 43),
+        backgroundColor: Colors.black,
         selectedItemColor: Colors.yellow,
         unselectedItemColor: Colors.white54,
         currentIndex: _currentIndex,
@@ -68,7 +73,10 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
+// Assuming these are defined in separate files (replace with actual content)
 class HomePage extends StatelessWidget {
+  const HomePage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return const Center(
@@ -77,16 +85,9 @@ class HomePage extends StatelessWidget {
   }
 }
 
-class ProfilePage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return const Center(
-      child: Text('Profile'),
-    );
-  }
-}
-
 class AdminPage extends StatelessWidget {
+  const AdminPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return const Center(

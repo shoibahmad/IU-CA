@@ -1,14 +1,15 @@
 import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:iu_ca/navigation_menu.dart'; // Replace with your actual import path
-import 'package:iu_ca/registrationpage.dart'; // Replace with your actual import path
-import 'package:iu_ca/resetpassword.dart'; // Replace with your actual import path
+import 'package:iu_ca/navigation_menu.dart'; 
+import 'package:iu_ca/registrationpage.dart'; 
+import 'package:iu_ca/resetpassword.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:iconsax/iconsax.dart';
-// Add this import
+
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -131,6 +132,7 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Login'),
+        automaticallyImplyLeading: false,
         titleTextStyle: TextStyle(color: Colors.white, fontSize: 23),
         backgroundColor: Colors.teal, // Changed app bar color
         centerTitle: true,
@@ -160,6 +162,7 @@ class _LoginPageState extends State<LoginPage> {
                         cursorColor: Colors.teal, // Changed cursor color
                         controller: _emailController,
                         cursorErrorColor: Colors.red,
+                        cursorOpacityAnimates: true,
                         decoration: InputDecoration(
                           labelText: 'Email',
                           border: OutlineInputBorder(
@@ -264,7 +267,7 @@ class _LoginPageState extends State<LoginPage> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => RegistrationPage(),
+                                  builder: (context) => const RegistrationPage(),
                                 ),
                               );
                             },

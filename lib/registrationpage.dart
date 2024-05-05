@@ -211,16 +211,15 @@ class _RegistrationPageState extends State<RegistrationPage> {
                         }
                       },
                       style: ElevatedButton.styleFrom(
-                        minimumSize: const Size(75, 50),
                         backgroundColor: Colors.teal,
-
+                        minimumSize: Size(45, 45),
                         padding: const EdgeInsets.symmetric(horizontal: 30),
                       ),
-                      child: const Text('Register', selectionColor: Colors.black),
-                      
-
-
-
+                      child: const Text(
+                        'Register',
+                        selectionColor: Colors.black,
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
                   ],
                 ),
@@ -231,7 +230,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
               Container(
                 color: Colors.black
                     .withOpacity(0.5), // Semi-transparent background
-                child: const Center(
+                child: Center(
                   child: SpinKitPulse(
                     color: Colors.teal,
                     size: 50.0,
