@@ -16,6 +16,6 @@ class AppNotification {
         'id': id,
         'title': title,
         'body': body,
-        'timestamp': timestamp.millisecondsSinceEpoch, // Convert to milliseconds
+        'timestamp': timestamp.millisecondsSinceEpoch, 
       };
 }

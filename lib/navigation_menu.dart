@@ -32,8 +32,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   final List<Widget> _pages = [
     const UrlRedirectScreen(),
-    const ProfileScreen(),
-    const AdminScreen(),
+  const AdminScreen(),
   ];
 
   @override
@@ -44,7 +43,7 @@ class _MyHomePageState extends State<MyHomePage> {
         children: _pages,
       ),
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.black87,
         selectedItemColor: Colors.yellow,
         unselectedItemColor: Colors.white54,
         currentIndex: _currentIndex,
@@ -54,10 +53,7 @@ class _MyHomePageState extends State<MyHomePage> {
             icon: Icon(Iconsax.home),
             label: 'Home',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Iconsax.user),
-            label: 'Profile',
-          ),
+          
           BottomNavigationBarItem(
             icon: Icon(Iconsax.setting),
             label: 'Admin',

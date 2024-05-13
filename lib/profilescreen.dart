@@ -87,6 +87,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Profile'),
+        automaticallyImplyLeading: false,
         centerTitle: true,
         actions: [
           IconButton(
@@ -123,7 +124,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     const SizedBox(height: 30),
                     Card(
                       elevation: 5,
-                      surfaceTintColor: Colors.amber,
+                      surfaceTintColor: Colors.teal,
                       color: Colors.white70,
                       child: Padding(
                         padding: const EdgeInsets.all(15),

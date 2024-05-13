@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -58,7 +57,6 @@ class _LoginPageState extends State<LoginPage> {
       );
       return await FirebaseAuth.instance.signInWithCredential(credential);
     } on FirebaseAuthException catch (e) {
-      // Handle specific error messages
       String errorMessage;
       switch (e.code) {
         case 'account-exists-with-different-credential':
@@ -69,7 +67,6 @@ class _LoginPageState extends State<LoginPage> {
           errorMessage = 'An error occurred during sign in.';
       }
       print(errorMessage);
-      // Show a user-friendly error message
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(errorMessage)),
       );
@@ -92,7 +89,6 @@ class _LoginPageState extends State<LoginPage> {
         MaterialPageRoute(builder: (context) => MyHomePage()),
       );
     } on FirebaseAuthException catch (e) {
-      // Handle specific error messages with user-friendly messages
       String errorMessage;
       switch (e.code) {
         case 'user-not-found':
@@ -104,11 +100,9 @@ class _LoginPageState extends State<LoginPage> {
         case 'invalid-email':
           errorMessage = 'Please enter a valid email address.';
           break;
-        // ... handle other error codes
         default:
           errorMessage = 'An error occurred during sign in.';
       }
-      // Show error message
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(errorMessage)),
       );
@@ -205,13 +199,12 @@ class _LoginPageState extends State<LoginPage> {
                             },
                           ),
                           helperText:
-                              'Password should be at least 8 characters long',
+                              'Usage of Sign Up function is preffered',
                         ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter your password';
                           }
-                          // Add password strength validation
 
                           return null;
                         },
@@ -230,7 +223,7 @@ class _LoginPageState extends State<LoginPage> {
                               },
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size(double.infinity, 50),
-                          backgroundColor: Colors.teal, // Changed button color
+                          backgroundColor: Colors.teal, 
                           textStyle: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 18,
@@ -281,7 +274,7 @@ class _LoginPageState extends State<LoginPage> {
                                 : const Text('Sign up',
                                     style: TextStyle(
                                         color:
-                                            Colors.teal)), // Changed link color
+                                            Colors.teal)), 
                           ),
                         ],
                       ),

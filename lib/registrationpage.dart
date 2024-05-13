@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:iu_ca/loginpage.dart';
-import 'package:iu_ca/model/user_model.dart';
+import 'loginpage.dart';
+import 'model/user_model.dart';
 
 class RegistrationPage extends StatefulWidget {
   const RegistrationPage({super.key});
@@ -16,13 +16,16 @@ class RegistrationPage extends StatefulWidget {
 class _RegistrationPageState extends State<RegistrationPage> {
   final _formKey = GlobalKey<FormState>();
   bool isLoading = false;
-  final _auth = FirebaseAuth.instance; // Firebase Authentication instance
+  final _auth = FirebaseAuth.instance; 
   String? fullname;
   String? email;
   String? enrollmentNumber;
   String? course;
-  String? year;
+  String? year; 
   String? password;
+
+  // List of years for the dropdown
+  final List<String> _years = ['1', '2', '3', '4'];
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +39,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Stack(
-          // Use Stack to overlay loading indicator
           children: [
             Container(
               padding: const EdgeInsets.all(20),
@@ -46,113 +48,175 @@ class _RegistrationPageState extends State<RegistrationPage> {
                   children: <Widget>[
                     const Icon(
                       Icons.school_outlined,
-                      color: Colors.black,
+                      color: Colors.white,
                       size: 60,
                     ),
                     const SizedBox(height: 20),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: TextFormField(
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter your full name';
-                          }
-                          return null;
-                        },
-                        decoration:
-                            const InputDecoration(labelText: 'Full Name'),
-                        cursorColor: Colors.amber,
-                        cursorOpacityAnimates: true,
-                        onChanged: (value) => fullname = value,
+
+                    // Text fields without the Card widget
+                    TextFormField(
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your full name';
+                        }
+                        return null;
+                      },
+                      decoration: InputDecoration(
+                        labelText: 'Full Name',
+                        enabledBorder: OutlineInputBorder(
+                          borderSide:
+                              const BorderSide(color: Colors.black, width: 1.0),
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide:
+                              const BorderSide(color: Colors.teal, width: 2.0),
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
                       ),
+                      cursorColor: Colors.amber,
+                      cursorOpacityAnimates: true,
+                      onChanged: (value) => fullname = value,
                     ),
                     const SizedBox(height: 20),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: TextFormField(
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter your gmail address';
-                          }
-                          if (!value.contains('@gmail.com')) {
-                            return 'Please enter a valid gmail address';
-                          }
-                          return null;
-                        },
-                        decoration: const InputDecoration(labelText: 'Gmail'),
-                        cursorColor: Colors.amber,
-                        cursorOpacityAnimates: true,
-                        onChanged: (value) => email = value,
+                    TextFormField(
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your email address';
+                        }
+                        if (!value.contains('@') ||
+                            !value.contains('.') ||
+                            !(value.endsWith('@gmail.com') ||
+                                value.endsWith('@student.iul.ac.in') ||
+                                value.endsWith('@iul.ac.in'))) {
+                          return 'Please enter a valid email address (e.g., @gmail.com, @student.iul.ac.in, @iul.ac.in)';
+                        }
+                        return null;
+                      },
+                      decoration: InputDecoration(
+                        labelText: 'Email',
+                        enabledBorder: OutlineInputBorder(
+                          borderSide:
+                              const BorderSide(color: Colors.black, width: 1.0),
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide:
+                              const BorderSide(color: Colors.teal, width: 2.0),
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
                       ),
+                      cursorColor: Colors.amber,
+                      cursorOpacityAnimates: true,
+                      onChanged: (value) => email = value,
                     ),
                     const SizedBox(height: 20),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: TextFormField(
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter your enrollment number';
-                          }
-                          return null;
-                        },
-                        decoration:
-                            const InputDecoration(labelText: 'Enrollment No.'),
-                        cursorColor: Colors.amber,
-                        cursorOpacityAnimates: true,
-                        maxLength: 10,
-                        onChanged: (value) => enrollmentNumber = value,
+                    TextFormField(
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your enrollment number';
+                        }
+                        return null;
+                      },
+                      decoration: InputDecoration(
+                        labelText: 'Enrollment No.',
+                        enabledBorder: OutlineInputBorder(
+                          borderSide:
+                              const BorderSide(color: Colors.black, width: 1.0),
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide:
+                              const BorderSide(color: Colors.teal, width: 2.0),
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
                       ),
+                      cursorColor: Colors.amber,
+                      cursorOpacityAnimates: true,
+                      maxLength: 10,
+                      onChanged: (value) => enrollmentNumber = value,
                     ),
                     const SizedBox(height: 20),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: TextFormField(
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter your course';
-                          }
-                          return null;
-                        },
-                        decoration: const InputDecoration(labelText: 'Course'),
-                        cursorColor: Colors.amber,
-                        cursorOpacityAnimates: true,
-                        onChanged: (value) => course = value,
+                    TextFormField(
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your course';
+                        }
+                        return null;
+                      },
+                      decoration: InputDecoration(
+                        labelText: 'Course',
+                        enabledBorder: OutlineInputBorder(
+                          borderSide:
+                              const BorderSide(color: Colors.black, width: 1.0),
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide:
+                              const BorderSide(color: Colors.teal, width: 2.0),
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
                       ),
+                      cursorColor: Colors.amber,
+                      cursorOpacityAnimates: true,
+                      onChanged: (value) => course = value,
                     ),
                     const SizedBox(height: 20),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: TextFormField(
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter your year';
-                          }
-                          return null;
-                        },
-                        decoration: const InputDecoration(labelText: 'Year'),
-                        cursorColor: Colors.amber,
-                        cursorOpacityAnimates: true,
-                        onChanged: (value) => year = value,
+
+                    // Dropdown for year selection
+                    DropdownButtonFormField<String>(
+                      decoration: InputDecoration(
+                        labelText: 'Year',
+                        enabledBorder: OutlineInputBorder(
+                          borderSide:
+                              const BorderSide(color: Colors.black, width: 1.0),
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide:
+                              const BorderSide(color: Colors.teal, width: 2.0),
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
                       ),
+                      value: year, // Set the initial value
+                      items: _years.map((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          year = newValue!;
+                        });
+                      },
                     ),
                     const SizedBox(height: 20),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: TextFormField(
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter your password';
-                          }
-                          return null;
-                        },
-                        decoration:
-                            const InputDecoration(labelText: 'Password'),
-                        obscureText: true,
-                        cursorColor: Colors.amber,
-                        cursorOpacityAnimates: true,
-                        maxLength: 9,
-                        onChanged: (value) => password = value,
+                    TextFormField(
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your password';
+                        }
+                        return null;
+                      },
+                      decoration: InputDecoration(
+                        labelText: 'Password',
+                        enabledBorder: OutlineInputBorder(
+                          borderSide:
+                              const BorderSide(color: Colors.black, width: 1.0),
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide:
+                              const BorderSide(color: Colors.teal, width: 2.0),
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
                       ),
+                      obscureText: true,
+                      cursorColor: Colors.amber,
+                      cursorOpacityAnimates: true,
+                      maxLength: 15,
+                      onChanged: (value) => password = value,
                     ),
                     const SizedBox(height: 20),
                     ElevatedButton(
@@ -165,9 +229,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                             // Create user with email and password
                             final credential =
                                 await _auth.createUserWithEmailAndPassword(
-                              email: email!,
-                              password: password!,
-                            );
+                                    email: email!, password: password!);
                             final users = credential.user!;
                             UserModel(
                               fullName: fullname!,
@@ -188,19 +250,19 @@ class _RegistrationPageState extends State<RegistrationPage> {
                               'enrollmentNumber': enrollmentNumber,
                               'course': course,
                               'year': year,
+                              // Do not store the password
                             });
 
                             // Navigate to LoginPage after successful registration
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => const LoginPage()),
+                                builder: (context) => const LoginPage(),
+                              ),
                             );
                           } on FirebaseAuthException catch (e) {
-                            // Handle Firebase authentication errors
                             _showErrorDialog(context, e.message!);
                           } catch (e) {
-                            // Handle other errors
                             _showErrorDialog(context,
                                 'An error occurred during registration.');
                           } finally {
@@ -212,7 +274,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.teal,
-                        minimumSize: Size(45, 45),
+                        minimumSize: const Size(45, 45),
                         padding: const EdgeInsets.symmetric(horizontal: 30),
                       ),
                       child: const Text(
@@ -225,12 +287,13 @@ class _RegistrationPageState extends State<RegistrationPage> {
                 ),
               ),
             ),
+
             // Loading indicator overlay
             if (isLoading)
               Container(
-                color: Colors.black
-                    .withOpacity(0.5), // Semi-transparent background
-                child: Center(
+                color: Colors.black.withOpacity(0.5),
+                // Semi-transparent background
+                child: const Center(
                   child: SpinKitPulse(
                     color: Colors.teal,
                     size: 50.0,

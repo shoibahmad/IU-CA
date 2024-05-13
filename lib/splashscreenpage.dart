@@ -55,7 +55,7 @@ class _SplashScreenState extends State<SplashScreen> {
               'IU CA Department',
               style: TextStyle(
                 fontSize: 18,
-                color: Colors.green, // Customize text color
+                color: Colors.black, // Customize text color
               ),
             ),
             const SizedBox(height: 50),
