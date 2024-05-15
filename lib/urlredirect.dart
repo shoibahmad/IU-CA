@@ -8,6 +8,8 @@ import 'package:url_launcher/url_launcher_string.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class AppNotification {
   final String title;
@@ -37,65 +39,28 @@ class _UrlRedirectScreenState extends State<UrlRedirectScreen> {
   late final Stream<QuerySnapshot> _notificationsStream;
   String? fullname, email, enrollmentNumber, course, year, profilePictureUrl;
   int _unreadNotificationsCount = 0;
+  bool _showNotifications = false; 
 
   @override
   void initState() {
     super.initState();
     _fetchUserData();
-    _showNotifications();
     _setupFCM();
     _notificationsStream = FirebaseFirestore.instance
         .collection('notifications')
         .orderBy('timestamp', descending: true)
         .snapshots();
     _notificationsStream.listen((snapshot) {
-      print('Notifications snapshot: ${snapshot.docs}');
-    });
-    // Listen for changes in unread notifications count
-    _notificationsStream.listen((snapshot) {
       setState(() {
         _unreadNotificationsCount = snapshot.docs
-            .where(
-                (doc) => (doc.data() as Map<String, dynamic>)['read'] == false)
+            .where((doc) => (doc.data() as Map<String, dynamic>)['read'] == false)
             .length;
       });
-    });
-
-    // Show the alert dialog after the user has logged in
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          backgroundColor: Colors.white,
-          iconColor: Colors.amber,
-          surfaceTintColor: Colors.black,
-          shadowColor: Colors.green,
-          title: const Text('IUSMS Login Required'),
-          content: const Text(
-            'To access the attendance and timetable, you need to login first in your IUSMS through the browser.',
-            selectionColor: Colors.amberAccent,
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text(
-                'OK',
-                selectionColor: Colors.teal,
-                style:
-                    TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-              ),
-            ),
-          ],
-        ),
-      );
     });
   }
 
   Future<void> _setupFCM() async {
     FirebaseMessaging messaging = FirebaseMessaging.instance;
-
     // Request permission and get token
     NotificationSettings settings = await messaging.requestPermission(
       alert: true,
@@ -106,7 +71,6 @@ class _UrlRedirectScreenState extends State<UrlRedirectScreen> {
       provisional: false,
       sound: true,
     );
-
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
       print('User granted permission');
       String? token = await messaging.getToken();
@@ -117,32 +81,25 @@ class _UrlRedirectScreenState extends State<UrlRedirectScreen> {
     } else {
       print('User declined or has not accepted permission');
     }
-
     // Handle incoming messages while in the foreground
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       print('Got a message whilst in the foreground!');
       print('Message data: ${message.data}');
       if (message.notification != null) {
         print('Message also contained a notification: ${message.notification}');
-
         // Store notification data in Firestore
         _storeNotificationData(
             message.notification!.title, message.notification!.body);
       }
     });
-
     // Handle messages when app is in background or terminated
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       print('Got a message whilst in the background!');
       print('Message data: ${message.data}');
       if (message.notification != null) {
         print('Message also contained a notification: ${message.notification}');
-
-        // Store notification data in Firestore
         _storeNotificationData(
             message.notification!.title, message.notification!.body);
-
-        // Navigate or handle notification details here
       }
     });
   }
@@ -150,8 +107,7 @@ class _UrlRedirectScreenState extends State<UrlRedirectScreen> {
   Future<void> _fetchUserData() async {
     try {
       DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance
-          .collection(
-              'users') // Replace 'users' with your actual collection name
+          .collection('users') // Replace 'users' with your actual collection name
           .doc(user.uid)
           .get();
       if (documentSnapshot.exists) {
@@ -171,87 +127,6 @@ class _UrlRedirectScreenState extends State<UrlRedirectScreen> {
     }
   }
 
-  Future<void> _showNotifications() async {
-    await showModalBottomSheet<void>(
-      backgroundColor: Colors.white,
-      context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(
-          builder: (BuildContext context, StateSetter setState) {
-            return Container(
-              height: MediaQuery.of(context).size.height * 0.7,
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                children: [
-                  const Text(
-                    'Notifications',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 20),
-                  Expanded(
-                    child: StreamBuilder<QuerySnapshot>(
-                      stream: _notificationsStream,
-                      builder: (context, snapshot) {
-                        if (snapshot.hasError) {
-                          return Center(
-                              child: Text('Error: ${snapshot.error}'));
-                        }
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return const Center(
-                              child: CircularProgressIndicator());
-                        }
-                        final notifications = snapshot.data!.docs.map((doc) {
-                          final data = doc.data() as Map<String, dynamic>;
-                          return AppNotification(
-                            title: data['title'],
-                            body: data['body'],
-                            timestamp:
-                                (data['timestamp'] as Timestamp).toDate(),
-                            id: doc.id,
-                            read: data['read'] ?? false,
-                          );
-                        }).toList();
-                        return ListView.builder(
-                          itemCount: notifications.length,
-                          itemBuilder: (context, index) {
-                            final notification = notifications[index];
-                            return ListTile(
-                              // Highlight unread notifications
-                              tileColor: !notification.read
-                                  ? Colors.grey[200]
-                                  : Colors.white,
-                              title: Text(
-                                notification.title,
-                                
-                                style: TextStyle(
-                                    fontWeight: !notification.read
-                                        ? FontWeight.bold
-                                        : null),
-                              ),
-                              subtitle: Text(notification.body),
-                              onTap: () {
-                                FirebaseFirestore.instance
-                                    .collection('notifications')
-                                    .doc(notification.id)
-                                    .update({'read': true});
-                                setState(() {});
-                              },
-                            );
-                          },
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
-
   // Store notification data in Firestore
   Future<void> _storeNotificationData(String? title, String? body) async {
     if (title != null && body != null) {
@@ -266,6 +141,65 @@ class _UrlRedirectScreenState extends State<UrlRedirectScreen> {
         print('Error storing notification data: $e');
       }
     }
+  }
+
+  // Show the notification bottom sheet
+  void _showNotificationsBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
+        ),
+      ),
+      builder: (context) => Container(
+        height: MediaQuery.of(context).size.height * 0.7,
+        decoration: BoxDecoration(
+          color: Colors.grey[200],
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(20),
+            topRight: Radius.circular(20),
+          ),
+        ),
+        child: StreamBuilder<QuerySnapshot>(
+          stream: FirebaseFirestore.instance
+              .collection('notifications')
+              .orderBy('timestamp', descending: true)
+              .snapshots(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            }
+            final notifications = snapshot.data!.docs;
+            return ListView.builder(
+              itemCount: notifications.length,
+              itemBuilder: (context, index) {
+                final notification =
+                    notifications[index].data() as Map<String, dynamic>;
+                return ListTile(
+                  title: Text(notification['title']),
+                  subtitle: Text(notification['body']),
+                  onTap: () {
+                    FirebaseFirestore.instance
+                        .collection('notifications')
+                        .doc(notifications[index].id)
+                        .update({'read': true});
+                    setState(() {});
+                  },
+                  // Highlight unread notifications
+                  tileColor: !notification['read']
+                      ? Colors.grey[200]
+                      : Colors.white,
+                );
+              },
+            );
+          },
+        ),
+      ),
+    );
   }
 
   @override
@@ -303,7 +237,6 @@ class _UrlRedirectScreenState extends State<UrlRedirectScreen> {
                       onPressed: () async {
                         // Log the user out
                         await FirebaseAuth.instance.signOut();
-
                         // Navigate to the login page
                         Navigator.pushReplacement(
                           context,
@@ -333,8 +266,14 @@ class _UrlRedirectScreenState extends State<UrlRedirectScreen> {
                   Icons.notifications,
                   color: Colors.black,
                 ),
-                onPressed:
-                    _unreadNotificationsCount > 0 ? _showNotifications : null,
+                onPressed: () {
+                  setState(() {
+                    _showNotifications = !_showNotifications;
+                  });
+                  if (_showNotifications) {
+                    _showNotificationsBottomSheet(context);
+                  }
+                },
               ),
               if (_unreadNotificationsCount > 0)
                 Positioned(
@@ -345,10 +284,7 @@ class _UrlRedirectScreenState extends State<UrlRedirectScreen> {
                     backgroundColor: Colors.red,
                     child: Text(
                       '$_unreadNotificationsCount',
-                      style: const TextStyle(
-                        fontSize: 10,
-                        color: Colors.white,
-                      ),
+                      style: const TextStyle(fontSize: 10, color: Colors.white),
                     ),
                   ),
                 ),
@@ -370,8 +306,7 @@ class _UrlRedirectScreenState extends State<UrlRedirectScreen> {
                   const SizedBox(height: 10),
                   Text(
                     '$fullname',
-                    style: const TextStyle(
-                        fontSize: 24, fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 20),
                   CircleAvatar(
@@ -379,13 +314,12 @@ class _UrlRedirectScreenState extends State<UrlRedirectScreen> {
                     backgroundImage: profilePictureUrl != null
                         ? CachedNetworkImageProvider(profilePictureUrl!)
                         : const NetworkImage(
-                                'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQt2PjOAntJbPl2_fEsHbvfk1zG0KruicRSWQ&s')
+                            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQt2PjOAntJbPl2_fEsHbvfk1zG0KruicRSWQ&s')
                             as ImageProvider, // Replace with your default image path
                   ),
                 ],
               ),
               const SizedBox(height: 20),
-
               // User Data Card
               Card(
                 color: Colors.teal[50],
@@ -426,7 +360,6 @@ class _UrlRedirectScreenState extends State<UrlRedirectScreen> {
                 ),
               ),
               const SizedBox(height: 20),
-
               // URL Redirect Buttons
               _buildButton(
                 'IUSMS',
@@ -451,12 +384,14 @@ class _UrlRedirectScreenState extends State<UrlRedirectScreen> {
                 'https://sms.iul.ac.in/Student/Attendance.aspx',
                 const Color.fromARGB(255, 148, 114, 103),
                 Iconsax.document,
+                requiresIUSMSLogin: true, // Requires IUSMS login
               ),
               _buildButton(
                 'Timetable',
                 'https://sms.iul.ac.in/Student/ProgramWiseTimeTable.aspx',
                 const Color.fromARGB(255, 120, 162, 122),
                 Iconsax.clock,
+                requiresIUSMSLogin: true, // Requires IUSMS login
               ),
               _buildButton(
                 'Coordinator List',
@@ -484,37 +419,61 @@ class _UrlRedirectScreenState extends State<UrlRedirectScreen> {
   }
 
   Widget _buildButton(
-      String text, String url, Color backgroundColor, IconData iconData) {
+      String text, String url, Color backgroundColor, IconData iconData,
+      {bool requiresIUSMSLogin = false}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10.0),
       child: ElevatedButton(
         onPressed: () {
-          showDialog(
-            barrierDismissible: false,
-            context: context,
-            builder: (context) => const AlertDialog(
-              backgroundColor: Colors.white,
-              contentPadding:
-                  EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
-              content: Row(
-                children: [
-                  SpinKitThreeBounce(
-                    color: Colors.teal,
-                    size: 20.0,
-                  ),
-                  SizedBox(
-                    width: 20,
-                    height: BorderSide.strokeAlignCenter,
-                  ),
-                  Text('Loading... Please wait')
-                ],
+          if (requiresIUSMSLogin) {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: const Text("IUSMS Login Required"),
+                  content: const Text(
+                      "This feature requires you to be logged in to IUSMS. Please log in to IUSMS first."),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        launchUrlString(
+                            'https://sms.iul.ac.in/Student/login.aspx');
+                      },
+                      child: const Text("OK"),
+                    ),
+                  ],
+                );
+              },
+            );
+          } else {
+            showDialog(
+              barrierDismissible: false,
+              context: context,
+              builder: (context) => const AlertDialog(
+                backgroundColor: Colors.white,
+                contentPadding:
+                    EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
+                content: Row(
+                  children: [
+                    SpinKitThreeBounce(
+                      color: Colors.teal,
+                      size: 20.0,
+                    ),
+                    SizedBox(
+                      width: 20,
+                      height: BorderSide.strokeAlignCenter,
+                    ),
+                    Text('Loading... Please wait')
+                  ],
+                ),
               ),
-            ),
-          );
-          Future.delayed(const Duration(seconds: 3), () {
-            Navigator.pop(context);
-            launchUrlString(url);
-          });
+            );
+            Future.delayed(const Duration(seconds: 3), () {
+              Navigator.pop(context);
+              launchUrlString(url);
+            });
+          }
         },
         style: ElevatedButton.styleFrom(
           backgroundColor: backgroundColor,
