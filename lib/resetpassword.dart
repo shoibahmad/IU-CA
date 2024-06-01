@@ -27,11 +27,12 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
       appBar: AppBar(
         titleTextStyle: const TextStyle(color: Colors.white, fontSize: 23),
         title: const Text('Password Reset'),
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.teal,
         centerTitle: true,
       ),
       body: SingleChildScrollView(
-        child: Form( // Wrap with Form widget
+        child: Form(
+          // Wrap with Form widget
           key: _formKey,
           child: Column(
             children: [
@@ -53,7 +54,8 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your email';
                     }
-                    if (!EmailValidator.validate(value)) { // Use EmailValidator
+                    if (!EmailValidator.validate(value)) {
+                      // Use EmailValidator
                       return 'Please enter a valid email address';
                     }
                     return null;
@@ -112,14 +114,15 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
                           errorMessage = 'Invalid email address.';
                           break;
                         default:
-                          errorMessage = 'An error occurred. Please try again later.';
+                          errorMessage =
+                              'An error occurred. Please try again later.';
                       }
 
                       // Show error message
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text(
-                            errorMessage, 
+                            errorMessage,
                             style: const TextStyle(color: Colors.red),
                           ),
                         ),
@@ -135,12 +138,12 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                   textStyle: const TextStyle(
                     fontSize: 15,
-                    color: Colors.white, 
+                    color: Colors.white,
                     decorationColor: Colors.amber,
                   ),
                 ),
                 child: const Text(
-                  'Reset Password', 
+                  'Reset Password',
                   style: TextStyle(color: Colors.white),
                 ),
               ),

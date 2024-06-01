@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:iu_ca/adminscreen.dart';
-import 'package:iu_ca/profilescreen.dart'; // Assuming ProfileScreen is defined
-import 'package:iu_ca/urlredirect.dart'; // Assuming UrlRedirectScreen is defined
+import 'package:iu_ca/urlredirect.dart';
 
 void main() {
   runApp(const MyApp());
@@ -32,7 +31,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   final List<Widget> _pages = [
     const UrlRedirectScreen(),
-  const AdminScreen(),
+    const AdminScreen(),
   ];
 
   @override
@@ -53,7 +52,6 @@ class _MyHomePageState extends State<MyHomePage> {
             icon: Icon(Iconsax.home),
             label: 'Home',
           ),
-          
           BottomNavigationBarItem(
             icon: Icon(Iconsax.setting),
             label: 'Admin',

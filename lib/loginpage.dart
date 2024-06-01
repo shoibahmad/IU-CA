@@ -3,12 +3,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:iu_ca/navigation_menu.dart'; 
-import 'package:iu_ca/registrationpage.dart'; 
+import 'package:iu_ca/navigation_menu.dart';
+import 'package:iu_ca/registrationpage.dart';
 import 'package:iu_ca/resetpassword.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:iconsax/iconsax.dart';
-
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -22,7 +21,7 @@ class _LoginPageState extends State<LoginPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isLoading = false;
-  bool _showPassword = false; // Add this for show/hide password
+  bool _showPassword = false; 
 
   @override
   void dispose() {
@@ -83,7 +82,6 @@ class _LoginPageState extends State<LoginPage> {
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
-      // Navigate to home page on success
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => MyHomePage()),
@@ -145,7 +143,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
               const SizedBox(height: 50),
               SizedBox(
-                width: 300, // Adjust width as needed
+                width: 300,
                 child: Form(
                   key: _formKey,
                   child: Column(
@@ -153,7 +151,7 @@ class _LoginPageState extends State<LoginPage> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       TextFormField(
-                        cursorColor: Colors.teal, // Changed cursor color
+                        cursorColor: Colors.teal,
                         controller: _emailController,
                         cursorErrorColor: Colors.red,
                         cursorOpacityAnimates: true,
@@ -167,7 +165,6 @@ class _LoginPageState extends State<LoginPage> {
                           if (value == null || value.isEmpty) {
                             return 'Please enter your email';
                           }
-                          // Add email validation (optional)
                           if (!value.contains('@')) {
                             return 'Please enter a valid email';
                           }
@@ -176,11 +173,10 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       const SizedBox(height: 20),
                       TextFormField(
-                        cursorColor: Colors.teal, // Changed cursor color
+                        cursorColor: Colors.teal,
                         cursorErrorColor: Colors.red,
                         controller: _passwordController,
-                        obscureText:
-                            !_showPassword, // Toggle password visibility
+                        obscureText: !_showPassword,
                         decoration: InputDecoration(
                           labelText: 'Password',
                           border: OutlineInputBorder(
@@ -198,8 +194,7 @@ class _LoginPageState extends State<LoginPage> {
                               });
                             },
                           ),
-                          helperText:
-                              'Usage of Sign Up function is preffered',
+                          helperText: 'Usage of Sign Up function is preffered',
                         ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -223,7 +218,7 @@ class _LoginPageState extends State<LoginPage> {
                               },
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size(double.infinity, 50),
-                          backgroundColor: Colors.teal, 
+                          backgroundColor: Colors.teal,
                           textStyle: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 18,
@@ -260,7 +255,8 @@ class _LoginPageState extends State<LoginPage> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => const RegistrationPage(),
+                                  builder: (context) =>
+                                      const RegistrationPage(),
                                 ),
                               );
                             },
@@ -272,9 +268,7 @@ class _LoginPageState extends State<LoginPage> {
                                         strokeWidth: 2),
                                   )
                                 : const Text('Sign up',
-                                    style: TextStyle(
-                                        color:
-                                            Colors.teal)), 
+                                    style: TextStyle(color: Colors.teal)),
                           ),
                         ],
                       ),
@@ -289,8 +283,8 @@ class _LoginPageState extends State<LoginPage> {
                         },
                         child: const Text(
                           'Forgot password?',
-                          style: TextStyle(
-                              color: Colors.teal), // Changed link color
+                          selectionColor: Colors.white,
+                          style: TextStyle(color: Colors.teal),
                         ),
                       ),
                     ],

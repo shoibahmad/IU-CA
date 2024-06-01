@@ -33,7 +33,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
       appBar: AppBar(
         title: const Text('New User Registration'),
         titleTextStyle: const TextStyle(color: Colors.white, fontSize: 20),
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.teal,
         centerTitle: true,
       ),
       backgroundColor: Colors.white,
